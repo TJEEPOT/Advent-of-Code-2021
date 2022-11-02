@@ -11,28 +11,53 @@ def part_1(values):
     depth = 0
 
     for value in values:
-        command = value.split(" ")
-        match command[0]: # Python 3.10 only
+        split_val = value.split(" ")
+        command = split_val[0]
+        units = int(split_val[1])
+        
+        match command: # Python 3.10 only
             case "forward":
-                hor_pos += int(command[1])
+                hor_pos += units
             case "down":
-                depth += int(command[1])
+                depth += units
             case "up":
-                depth -= int(command[1])
+                depth -= units
             case _:
                 print("Invalid command detected: " + command[0] + "\nFull value: " + value)
-                return 0
+                return (0, 0)
 
     return (hor_pos, depth)
 
 def part_2(values):
-    return 0
+    """The "forward" value increases the value of the hor_pos by the given amount and the value of depth by aim times the given amount. "up" decreases aim by the given amount. "down" increases aim by the given amount."""
+    hor_pos = 0
+    depth = 0
+    aim = 0
+
+    for value in values:
+        split_val = value.split(" ")
+        command = split_val[0]
+        units = int(split_val[1])
+
+        match command: # Python 3.10 only
+            case "forward":
+                hor_pos += units
+                depth += (aim * units)
+            case "down":
+                aim += units
+            case "up":
+                aim -= units
+            case _:
+                print("Invalid command detected: " + command[0] + "\nFull value: " + value)
+                return (0, 0)
+
+    return (hor_pos, depth)
 
 
 if __name__ == "__main__":
-    values = tools.read_data("2")
+    values = tools.read_data("2.txt")
     hor_pos, depth = part_1(values)
     print(f"Part 1: pos = {hor_pos}, depth = {depth}. Multiplied is: {hor_pos*depth}")
 
-    p2 = part_2(values)
-    print(f"Part 2: {p2}")
+    hor_pos, depth = part_2(values)
+    print(f"Part 2: pos = {hor_pos}, depth = {depth}. Multiplied is: {hor_pos*depth}")
