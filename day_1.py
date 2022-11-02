@@ -31,5 +31,5 @@ def part_2(values):
 
 if __name__ == "__main__":
     values = tools.read_ints("1")
-    print(part_1(values))
-    print(part_2(values))
+    print("Part 1: " + part_1(values))
+    print("Part 2: " + part_2(values))
