@@ -38,13 +38,13 @@ def part_1(values):
             epsilon += "0"
 
     # Treat gamma and epsilon as binary representations of a value and convert those values to decimal.
-    gamma_int = convert_binary_str_to_int(gamma)
-    epsilon_int = convert_binary_str_to_int(epsilon)
+    gamma_int = _convert_binary_str_to_int(gamma)
+    epsilon_int = _convert_binary_str_to_int(epsilon)
 
     # Return the product of those values.
     return gamma_int * epsilon_int
 
-def convert_binary_str_to_int(binary_value: str) -> int:
+def _convert_binary_str_to_int(binary_value: str) -> int:
     """Finds and returns the integer representation of a binary string."""
     binary_value = binary_value[::-1] # reverse the string to represent a little endian value
     int_value = 0
@@ -53,19 +53,53 @@ def convert_binary_str_to_int(binary_value: str) -> int:
         int_value += bit_value
     return int_value
 
-def part_1_test():
+def _part_1_test():
     values = ["1101011010\n", "0110101110\n", "1010101001\n"]
-    test_int = convert_binary_str_to_int("1101011010")
+    test_int = _convert_binary_str_to_int("1101011010")
     print(f"Testing binary converter (should be 858): {test_int}")
     answer = part_1(values) # ("1110101010" = 938) * ("0001010101" = 85) = 79730
     print(f"Testing part 1 solver (should be 79730): {answer}")
 
 def part_2(values):
-    return 0
+    # Find ratings with bit criteria
+    oxygen = _find_rating(values, 0, True)
+    co2 = _find_rating(values, 0, False)
+
+    # Convert to decimal
+    oxygen_int = _convert_binary_str_to_int(oxygen)
+    co2_int = _convert_binary_str_to_int(co2)
+
+    # return the product
+    return oxygen_int * co2_int
+
+def _find_rating(values: list, bit_position: int, find_most_common: bool) -> str:
+    """Recursively find the one value from values which fits the requirements and return it."""
+    if len(values) == 1:
+        return values[0][:-1] # remove the \n
+    
+    value_0 = []
+    value_1 = []
+    for value in values:
+        if value[bit_position] == "0":
+            value_0.append(value)
+        else:
+            value_1.append(value)
+    
+    if (find_most_common and len(value_0) > len(value_1)) or (not find_most_common and len(value_0) <= len(value_1)):
+        result = _find_rating(value_0, bit_position+1, find_most_common)
+    else:
+        result = _find_rating(value_1, bit_position+1, find_most_common)
+
+    return result
+def _part_2_test():
+    values = ["00100\n", "11110\n", "10110\n", "10111\n", "10101\n", "01111\n", "00111\n", "11100\n", "10000\n", "11001\n", "00010\n", "01010\n"]
+    rating = part_2(values)
+    print(f"Rating (should be 230): {rating}")
 
 
 if __name__ == "__main__":
-    # part_1_test()
+    # _part_1_test()
+    #_part_2_test()
     values = tools.read_data("3.txt")
 
     p1 = part_1(values)
